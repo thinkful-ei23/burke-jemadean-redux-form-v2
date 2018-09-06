@@ -1,10 +1,10 @@
 import React from 'react';
-import {reduxForm, Field} from 'redux-form';
+import {reduxForm, Field, SubmissionError} from 'redux-form';
 import {required, nonEmpty, requiredLength, requiredAllNumbers} from '../validators';
 import Input from './Input';
 
-export function Form(props) {
-  onsubmit(values) {
+export class Form extends React.Component {
+  onSubmit(values) {
     return fetch('https://us-central1-delivery-form-api.cloudfunctions.net/api/report', {
       method: 'POST',
       body: JSON.stringify(values),
@@ -14,9 +14,9 @@ export function Form(props) {
     })
     .then(res => {
       if (!res.ok) {
-         (
+         if (
             res.headers.has('content-type') &&
-            rifes.headers
+            res.headers
                 .get('content-type')
                 .startsWith('application/json')
         ) {
@@ -51,24 +51,28 @@ export function Form(props) {
   }
 
   render() {
-  let successMessage;
-  if (this.props.submitSucceeded) {
-  successMessage = (
-      <div className="message message-success">
-          Message submitted successfully
-      </div>
-  );
-  }
+    let successMessage;
+    if (this.props.submitSucceeded) {
+      successMessage = (
+          <div className="message message-success">
+              Message submitted successfully
+          </div>
+      );
+    }
 
-  let errorMessage;
-  if (this.props.error) {
-  errorMessage = (
-      <div className="message message-error">{this.props.error}</div>
-  );
-  }
-      })  
+    let errorMessage;
+    if (this.props.error) {
+      errorMessage = (
+          <div className="message message-error">{this.props.error}</div>
+      );
+    }
+
   return(
-    <form>
+    <form onSubmit={this.props.handleSubmit(values =>
+      this.onSubmit(values)
+  )}>
+      {successMessage}
+      {errorMessage}
       <div>
         <Field label="Tracking number" name="trackingNumber" id="trackingNumber" component={Input} validate={[required, nonEmpty, requiredLength, requiredAllNumbers]} />
       </div>
@@ -89,6 +93,8 @@ export function Form(props) {
       </div>
     </form>
   )
+}
+
 }
 
 export default reduxForm({
