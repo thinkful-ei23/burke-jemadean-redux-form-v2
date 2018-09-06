@@ -9,4 +9,4 @@
 export const required = value => value ? undefined : 'Required';
 export const nonEmpty = value => value.trim() !== ''? undefined : 'Cannot be empty';
 export const requiredLength = value => value.length === 5 ? undefined : 'Tracking number must be 5 characters long';
-export const eachCharacterNumber = value => value.split('').find(character => isNaN(character) || character === ' ') ? 'Must be all numbers' : undefined;
+export const requiredAllNumbers = value => value.split('').find(character => isNaN(character) || character === ' ') ? 'Must be all numbers' : undefined;
